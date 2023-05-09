@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service // notação para mostrar para o Spring que isso será carregado como um serviço
 public class AutenticacaoService implements UserDetailsService{
 
-    @Autowired
+    @Autowired // Sprint sera responsavel por instanciar o repositorio
     private UsuarioRepository repository;
 
     @Override
