@@ -16,7 +16,7 @@ import med.voll.apiv2.domain.usuario.DadosAutenticacao;
 @RequestMapping("/login")
 public class AutenticacaoController {
 
-    //classe do proprio Spring que dispara o processo de autenticacao
+    //classe do Spring que dispara o processo de autenticacao
 
     @Autowired
     private AuthenticationManager manager;
@@ -31,5 +31,5 @@ public class AutenticacaoController {
 
     }
 
-    
+
 }
