@@ -16,20 +16,25 @@ import med.voll.apiv2.domain.usuario.DadosAutenticacao;
 @RequestMapping("/login")
 public class AutenticacaoController {
 
-    //classe do Spring que dispara o processo de autenticacao
-
     @Autowired
+    /*
+     * Atributo da classe AuthenticantionManager do Spring que dispara o processo de
+     * autenticacao.
+     */
     private AuthenticationManager manager;
 
     @PostMapping
-    public ResponseEntity login(@RequestBody @Valid DadosAutenticacao dados){
+    public ResponseEntity login(@RequestBody @Valid DadosAutenticacao dados) {
+
+        /*
+         *  DTO proprio do Spring que recebe o usuario e a senha.
+         */
+        
         var token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
         var authentication = manager.authenticate(token);
-
 
         return ResponseEntity.ok().build();
 
     }
-
 
 }

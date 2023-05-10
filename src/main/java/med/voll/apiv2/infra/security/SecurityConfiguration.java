@@ -23,25 +23,37 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         /*
-         *  Este método onfigura autenticação stateless
+         * Recebe o atributo http do tipo
+         * HttpSecurity que irá habilitar diferentes configurações e também o método
+         * build() para criação
+         * do objeto SecurityFilterChain que será retornado.
          */
-        return http.csrf().disable() // desabilia CRSF do SPRING pois utilizar token já resolve
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().build();
+        return http
+                .csrf().disable() // desabilita a proteção contra ataques CSRF do Spring
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Objeto com atributo estático STATELESS 
+                .build(); // Cria o objeto do tipo SecurityFilterChain
     }
 
-    /* o @Bean validation serve para exportar uma classe para o Spring,
-     * fazendo com que ele consiga carregá-lo e realize sua injeção de 
+    /*
+     * o @Bean validation serve para exportar uma classe para o Spring,
+     * fazendo com que ele consiga carregá-lo e realize sua injeção de
      * dependencia em outras classes
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        /*
+         *  Esta classe cria o objeto AuthenticantionManager. 
+         */
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
+        /*
+         * Algoritmo de hashing de senhas para nao salvar em texto limpo no banco de dados,
+         * assim evitando possiveis vazamentos.
+         */
         return new BCryptPasswordEncoder();
     }
 }
