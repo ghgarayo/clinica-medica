@@ -24,9 +24,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         /*
          * Recebe o atributo http do tipo
-         * HttpSecurity que irá habilitar diferentes configurações e também o método
-         * build() para criação
-         * do objeto SecurityFilterChain que será retornado.
+         * HttpSecurity que irá habilitar diferentes configurações e também
+         * o método build() para criação do objeto SecurityFilterChain que será retornado.
          */
         return http
                 .csrf().disable() // desabilita a proteção contra ataques CSRF do Spring
