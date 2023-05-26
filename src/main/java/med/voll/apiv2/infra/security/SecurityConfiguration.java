@@ -1,7 +1,9 @@
 package med.voll.apiv2.infra.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,10 +12,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
+    @Autowired
+    private SecurityFilter securityFilter;
 
     /*
      * SecurityFilterChain é o tipo objeto do Spring que será utilizado para
@@ -25,12 +31,15 @@ public class SecurityConfiguration {
         /*
          * Recebe o atributo http do tipo
          * HttpSecurity que irá habilitar diferentes configurações e também
-         * o método build() para criação do objeto SecurityFilterChain que será retornado.
+         * o método build() para criação do objeto SecurityFilterChain que será
+         * retornado.
          */
-        return http
-                .csrf().disable() // desabilita a proteção contra ataques CSRF do Spring
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Objeto com atributo estático STATELESS 
+        return http.csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().authorizeHttpRequests()
+                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .anyRequest().authenticated()
+                .and().addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build(); // Cria o objeto do tipo SecurityFilterChain
     }
 
@@ -42,7 +51,7 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         /*
-         *  Esta classe cria o objeto AuthenticantionManager. 
+         * Esta classe cria o objeto AuthenticantionManager.
          */
         return configuration.getAuthenticationManager();
     }
@@ -50,7 +59,8 @@ public class SecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         /*
-         * Algoritmo de hashing de senhas para nao salvar em texto limpo no banco de dados,
+         * Algoritmo de hashing de senhas para nao salvar em texto limpo no banco de
+         * dados,
          * assim evitando possiveis vazamentos.
          */
         return new BCryptPasswordEncoder();
